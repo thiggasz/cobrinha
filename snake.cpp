@@ -42,15 +42,15 @@ char MAPA[26][26] =
 };
 
 int andou[26][26] = {0};
-int passo = 0, placar=0;
+int passo = 0, placar = 0;
 
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
-ALLEGRO_BITMAP *fim   = NULL;
 ALLEGRO_BITMAP *mapa   = NULL;
-ALLEGRO_BITMAP *maca = NULL;
-ALLEGRO_BITMAP *cobra = NULL;
+ALLEGRO_BITMAP *cobra = NULL;  //cobra
+ALLEGRO_BITMAP *maca = NULL;  //fruta
+ALLEGRO_BITMAP *fim   = NULL; //tela final
 
 int i = 15, j = 12;   //posicao inicial da Snake na matriz
 int q = 20;           //tamanho de cada celula no mapa
@@ -104,25 +104,26 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    cobra = al_load_bitmap("cobra.tga");
-    al_draw_bitmap(cobra,posx,posy,0);
-    maca = al_load_bitmap("doce.tga");      //cria a fruta
-    al_draw_bitmap(maca,0,0,0);
-    
+    cobra = al_load_bitmap("cobra.tga");		//cria a cobra
     if(!cobra)
     {
         al_destroy_display(display);
         al_destroy_timer(timer);
         return -1;
     }
+    al_draw_bitmap(cobra,0,0,0);
+
+    maca = al_load_bitmap("doce.tga");      //cria a fruta
     if(!maca)
     {
         al_destroy_display(display);
         al_destroy_timer(timer);
         return -1;
     }
+    al_draw_bitmap(maca,0,0,0);
 
     al_set_target_bitmap(al_get_backbuffer(display)); //muda de volta o destino dos desenhos para o display
+
 
     event_queue = al_create_event_queue();
     if(!event_queue)
@@ -156,10 +157,9 @@ int main(int argc, char **argv)
     dir = false;
     srand(time(0));
     int im=rand()%23+1,jm=rand()%23+1; //posicoes da fruta
-    int i0=i,j0=j; //i e j anteriores
     int tam=5; //tamanho da cobra
     int v[10000]; //vetor para posicoes do corpo da cobra
-    int cont0=-2; //usado no fim como a quantidade anterior de quadrados no corpo da cobra para comparacao
+    int cont0=-2; //usado no fim como a quantidade anterior de quadrados do corpo da cobra, para verificar se bateu na parede ou em si mesma
 
     while(!sair){
 
@@ -192,10 +192,6 @@ int main(int argc, char **argv)
                 j++;
                 posx = j*q;
             }
-
-            if(i0==i&&j0==j&&(i!=15||j!=12)) //se i e j nao mudaram e nao estao na posicao de inicio, esta na parede
-                sair=true;
-            i0=i;j0=j;
 
             redraw = true;
         }
@@ -312,9 +308,9 @@ int main(int argc, char **argv)
                 }
             }
             al_draw_bitmap(maca,jm*q,im*q,0); //desenha fruta
-            if(cont0>cont){ //se o cont0, a quantidade anterior de quadrados do corpo da cobra, foi maior do que agora, ela se sobrepos e colidiu
+            if(cont0>cont){ //se o cont0, a quantidade anterior de quadrados do corpo da cobra, foi maior que agora, ela encolheu ao chegar na parede ou entrou em si mesma
                 sair=true;
-                mostre=0; //a cobra entrou em si mesma, e nao vamos mostrar isso no display
+                mostre=0; //nao vamos mostrar isso no display
             }
             cont0=cont;
             if(mostre)
