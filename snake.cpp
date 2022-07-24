@@ -42,6 +42,7 @@ char MAPA[26][26] =
 };
 
 int andou[26][26] = {0};
+char direcao[26][26];    //matriz para marcar onde o corpo deve virar e a direcao
 int passo = 0, placar = 0;
 
 ALLEGRO_DISPLAY *display = NULL;
@@ -104,7 +105,7 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    cobra = al_load_bitmap("cobra.tga");		//cria a cobra
+    cobra = al_load_bitmap("cobra(c).png");		//cria a cobra
     if(!cobra)
     {
         al_destroy_display(display);
@@ -157,9 +158,10 @@ int main(int argc, char **argv)
     dir = false;
     srand(time(0));
     int im=rand()%23+1,jm=rand()%23+1; //posicoes da fruta
-    int tam=5; //tamanho da cobra
+    int tam=5;    //tamanho da cobra
     int v[10000]; //vetor para posicoes do corpo da cobra
     int cont0=-2; //usado no fim como a quantidade anterior de quadrados do corpo da cobra, para verificar se bateu na parede ou em si mesma
+    bool atravessa;  //verifica se pode atravessar parede
 
     while(!sair){
 
@@ -169,6 +171,12 @@ int main(int argc, char **argv)
         if(ev.type == ALLEGRO_EVENT_TIMER){
             passo++;
             andou[i][j]=passo;
+
+            if(j==1||j==23)  //se esta nas colunas extremas
+                atravessa=true;  //pode atravessar
+            else 
+                atravessa=false;
+
             if(cima && MAPA[i-1][j] != '1')
             {
                 i--;
@@ -186,11 +194,22 @@ int main(int argc, char **argv)
                 j--;
                 posx = j*q;
             }
-
+            if(esq && MAPA[i][j-1] == '1') //se a parede esta a esquerda
+            {
+                if(atravessa)  //se ja estava na primeira coluna
+                    j=23;
+                posx = j*q;
+            }
             if(dir && MAPA[i][j+1] != '1')
             {
                 j++;
                 posx = j*q;
+            }
+            if(dir && MAPA[i][j+1] == '1') //se a parede esta a direita
+            {
+                if(atravessa)  //se ja estava na ultima coluna
+                    j=1;
+                posx=j*q;
             }
 
             redraw = true;
@@ -273,7 +292,6 @@ int main(int argc, char **argv)
                 break;
             }
         }
-
         if(redraw && al_is_event_queue_empty(event_queue))
         {
             redraw = false;
@@ -282,8 +300,8 @@ int main(int argc, char **argv)
 
             al_draw_bitmap(mapa,0,0,0);
             int cont=-1;  //contador para as posicoes do vetor
-            int comeu=0;
-            int mostre=1;  //explicado abaixo
+            bool comeu=false;
+            bool mostre=true;  //explicado abaixo
             for(int i=0;i<26;i++)
                 for(int j=0;j<26;j++)
                     if(andou[i][j]>0 && andou[i][j]>=passo-tam-1){
@@ -291,20 +309,48 @@ int main(int argc, char **argv)
                         v[cont*2]=j;
                         v[cont*2+1]=i;
                         if(j==jm&&i==im) //encontra com a fruta
-                            comeu=1;
-                        al_draw_bitmap(cobra,j*q,i*q,0);   //desenha quadrado
+                            comeu=true;
+                        if(andou[i][j]==passo){  //se for cabeca
+                            if(cima){
+                                cobra = al_load_bitmap("cobra(c).png");  //carrega a imagem para cima
+                                direcao[i][j]='c';  //marca que o corpo vira para cima nesta posicao
+                            }
+                            if(baixo){
+                                cobra = al_load_bitmap("cobra(b).png");
+                                direcao[i][j]='b';
+                            }
+                            if(dir){
+                                cobra = al_load_bitmap("cobra(d).png");
+                                direcao[i][j]='d';
+                            }
+                            if(esq){
+                                cobra = al_load_bitmap("cobra(e).png");
+                                direcao[i][j]='e';
+                            }
+                        }
+                        else{   //se for corpo
+                            if(direcao[i][j]=='c')
+                                cobra = al_load_bitmap("corpo(c).png"); //carrega imagem do corpo para cima
+                            if(direcao[i][j]=='d')
+                                cobra = al_load_bitmap("corpo(d).png");
+                            if(direcao[i][j]=='e')
+                                cobra = al_load_bitmap("corpo(e).png");
+                            if(direcao[i][j]=='b')
+                                cobra = al_load_bitmap("corpo(b).png");
+                        }
+                        al_draw_bitmap(cobra,j*q,i*q,0);   //desenha parte da cobra
                     }
             if(comeu){
                 placar++;
                 tam++;
-                int teste=1;
+                bool teste=true;
                 while(teste){  
-                    teste=0;
+                    teste=false;
                     im=rand()%23+1; //muda posicao da fruta
                     jm=rand()%23+1;
                     for(int k=cont*2+1;k>=1;k-=2)  //testa se a posicao gerada coincide com a cobra, se sim, volta para o topo e gera outra
                         if(im==v[k]&&jm==v[k-1]) 
-                            teste=1;
+                            teste=true;
                 }
             }
             al_draw_bitmap(maca,jm*q,im*q,0); //desenha fruta
@@ -319,7 +365,7 @@ int main(int argc, char **argv)
                 fim = al_load_bitmap("fim.bmp");
                 al_draw_bitmap(fim,0,0,0);
                 al_flip_display();
-                int esc=0;
+                bool esc=false;
                 while(!esc){
                     ALLEGRO_EVENT ev;
                     al_wait_for_event(event_queue, &ev);
@@ -328,7 +374,7 @@ int main(int argc, char **argv)
                         switch(ev.keyboard.keycode)
                         {
                         case ALLEGRO_KEY_ESCAPE:  //tecla ESC
-                            esc=1;
+                            esc=true;
                             break;
                         }
                     }
