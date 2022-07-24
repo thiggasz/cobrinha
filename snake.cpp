@@ -329,14 +329,7 @@ int main(int argc, char **argv)
                             }
                         }
                         else{   //se for corpo
-                            if(direcao[i][j]=='c')
-                                cobra = al_load_bitmap("corpo(c).png"); //carrega imagem do corpo para cima
-                            if(direcao[i][j]=='d')
-                                cobra = al_load_bitmap("corpo(d).png");
-                            if(direcao[i][j]=='e')
-                                cobra = al_load_bitmap("corpo(e).png");
-                            if(direcao[i][j]=='b')
-                                cobra = al_load_bitmap("corpo(b).png");
+                            cobra = al_load_bitmap("corpo.png"); //carrega imagem do corpo
                         }
                         al_draw_bitmap(cobra,j*q,i*q,0);   //desenha parte da cobra
                     }
