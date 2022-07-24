@@ -49,7 +49,6 @@ ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *fim   = NULL;
 ALLEGRO_BITMAP *mapa   = NULL;
-ALLEGRO_BITMAP *quad = NULL;
 ALLEGRO_BITMAP *maca = NULL;
 ALLEGRO_BITMAP *cobra = NULL;
 
@@ -105,11 +104,12 @@ int inicializa() {
     }
     al_draw_bitmap(mapa,0,0,0);
 
-    quad = al_create_bitmap(QUAD_SIZE, QUAD_SIZE);		//cria um bitmap 20 x 20
+    cobra = al_load_bitmap("cobra.tga");
+    al_draw_bitmap(cobra,posx,posy,0);
     maca = al_load_bitmap("doce.tga");      //cria a fruta
     al_draw_bitmap(maca,0,0,0);
     
-    if(!quad)
+    if(!cobra)
     {
         al_destroy_display(display);
         al_destroy_timer(timer);
@@ -122,19 +122,13 @@ int inicializa() {
         return -1;
     }
 
-    cobra = al_load_bitmap("cobra.tga");
-    al_draw_bitmap(cobra,posx,posy,0);
-    al_set_target_bitmap(quad);                    //muda destino dos desenhos para o bitmap quad
-    // al_clear_to_color(al_map_rgb(255, 0, 0));       //limpa e colore de magenta
-
     al_set_target_bitmap(al_get_backbuffer(display)); //muda de volta o destino dos desenhos para o display
-
 
     event_queue = al_create_event_queue();
     if(!event_queue)
     {
         cout << "Falha ao criar a fila de eventos" << endl;
-        al_destroy_bitmap(quad);
+        al_destroy_bitmap(cobra);
         al_destroy_bitmap(maca);
         al_destroy_display(display);
         al_destroy_timer(timer);
@@ -302,7 +296,7 @@ int main(int argc, char **argv)
                         v[cont*2+1]=i;
                         if(j==jm&&i==im) //encontra com a fruta
                             comeu=1;
-                        al_draw_bitmap(quad,j*q,i*q,0);   //desenha quadrado
+                        al_draw_bitmap(cobra,j*q,i*q,0);   //desenha quadrado
                     }
             if(comeu){
                 placar++;
@@ -347,7 +341,7 @@ int main(int argc, char **argv)
         }
     }
 
-    al_destroy_bitmap(quad);
+    al_destroy_bitmap(cobra);
     al_destroy_bitmap(maca);
     al_destroy_bitmap(mapa);
     al_destroy_timer(timer);
