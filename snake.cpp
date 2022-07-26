@@ -329,6 +329,17 @@ int main(int argc, char **argv)
                                 direcao[i][j]='e';
                             }
                         }
+                        else if(andou[i][j]==passo-tam-1){ //se for rabo
+                            if(direcao[i][j]=='c')
+                                cobra = al_load_bitmap("rabo(c).png");
+                            if(direcao[i][j]=='b')
+                                cobra = al_load_bitmap("rabo(b).png");
+                            if(direcao[i][j]=='d')
+                                cobra = al_load_bitmap("rabo(d).png");
+                            if(direcao[i][j]=='e')
+                                cobra = al_load_bitmap("rabo(e).png");
+                        }
+                        
                         else{   //se for corpo
                             if(direcao[i][j]=='c')
                                 if(andou[i][j-1]>=passo-tam-1&&direcao[i][j-1]=='d')   //se o quadrado a esquerda faz parte do corpo e esta para a direita
