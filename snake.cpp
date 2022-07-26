@@ -49,7 +49,7 @@ int passo = 0, placar = 0;
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
-ALLEGRO_BITMAP *mapa   = NULL;
+ALLEGRO_BITMAP *mapa   = NULL; //mapa
 ALLEGRO_BITMAP *cobra = NULL;  //cobra
 ALLEGRO_BITMAP *maca = NULL;  //fruta
 ALLEGRO_BITMAP *doce = NULL;  //bonus
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
 
             al_draw_bitmap(mapa,0,0,0);
             int cont=-1;  //contador para as posicoes do vetor
-            bool comeu=false;
+            bool comeu=false;  //definir se comeu a fruta
             bool mostre=true;  //explicado abaixo
             for(int i=0;i<26;i++)
                 for(int j=0;j<26;j++)
@@ -376,10 +376,10 @@ int main(int argc, char **argv)
                         al_draw_bitmap(cobra,j*q,i*q,0);   //desenha parte da cobra
                     }
             if(comeu){
-                placar++;
-                tam++;
+                placar++;  //adiciona ao placar
+                tam++;     //aumenta ao tamanho da cobra
                 bool teste=true;
-                while(teste){  
+                while(teste){ 
                     teste=false;
                     im=rand()%23+1; //muda posicao da fruta
                     jm=rand()%23+1;
@@ -400,15 +400,15 @@ int main(int argc, char **argv)
                             teste=true;}
                 bonus++;
             }
-            else if(bonus==100){//desenha bonus
+            else if(bonus==100){//desenhar o bonus
                 doce = al_load_bitmap("doce.tga");
                 al_draw_bitmap(doce,jd*q,id*q,0); //desenha o doce
-                if(j==jd&&i==id){
+                if(j==jd&&i==id){//se comeu 
                     placar+=3;
                     tam+=3;
                     bonus=0;}
             }
-            else
+            else    //aumentar o contador do bonus
                 bonus++;
 
             if(cont0>cont){ //se o cont0, a quantidade anterior de quadrados do corpo da cobra, foi maior que agora, ela encolheu ao chegar na parede ou entrou em si mesma
@@ -418,13 +418,13 @@ int main(int argc, char **argv)
             cont0=cont;
             if(mostre)
                 al_flip_display();
-            if(sair){
-                fim = al_load_bitmap("fim.png");
-                al_draw_bitmap(fim,0,0,0);
+            if(sair){ //caso a cobra morra
+                fim = al_load_bitmap("fim.png");  //tela final
+                al_draw_bitmap(fim,0,0,0);        //desenhar tela final
                 al_flip_display();
                 bool esc=false;
                 
-                while(!esc){
+                while(!esc){ //enquanto nao fechar o jogo
                     ALLEGRO_EVENT ev;
                     al_wait_for_event(event_queue, &ev);
                     if(ev.type == ALLEGRO_EVENT_KEY_UP)
