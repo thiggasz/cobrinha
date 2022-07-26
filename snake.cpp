@@ -45,6 +45,7 @@ int andou[26][26] = {0};
 char direcao[26][26];    //matriz para marcar onde o corpo deve virar e a direcao
 int passo = 0, placar = 0;
 
+
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
@@ -313,7 +314,7 @@ int main(int argc, char **argv)
                         if(andou[i][j]==passo){  //se for cabeca
                             if(cima){
                                 cobra = al_load_bitmap("cobra(c).png");  //carrega a imagem para cima
-                                direcao[i][j]='c';  //marca que o corpo vira para cima nesta posicao
+                                direcao[i][j]='c';  //marca que o corpo vira para cima nesta posicao 
                             }
                             if(baixo){
                                 cobra = al_load_bitmap("cobra(b).png");
@@ -329,7 +330,34 @@ int main(int argc, char **argv)
                             }
                         }
                         else{   //se for corpo
-                            cobra = al_load_bitmap("corpo.png"); //carrega imagem do corpo
+                            if(direcao[i][j]=='c')
+                                if(andou[i][j-1]>=passo-tam-1&&direcao[i][j-1]=='d')   //se o quadrado a esquerda faz parte do corpo e esta para a direita
+                                    cobra = al_load_bitmap("corpo(dc).png");   //carrega imagem da curva saindo da direita indo para cima
+                                else if(andou[i][j+1]>=passo-tam-1&&direcao[i][j+1]=='e')
+                                    cobra = al_load_bitmap("corpo(ec).png");
+                                else
+                                    cobra = al_load_bitmap("corpo(c).png"); //carrega imagem do corpo para cima
+                            else if(direcao[i][j]=='d')
+                                if(andou[i+1][j]>=passo-tam-1&&direcao[i+1][j]=='c') //
+                                    cobra = al_load_bitmap("corpo(cd).png"); 
+                                else if(andou[i-1][j]>=passo-tam-1&&direcao[i-1][j]=='b') //
+                                    cobra = al_load_bitmap("corpo(ec).png");
+                                else
+                                    cobra = al_load_bitmap("corpo(d).png");
+                            else if(direcao[i][j]=='e')
+                                if(andou[i+1][j]>=passo-tam-1&&direcao[i+1][j]=='c')
+                                    cobra = al_load_bitmap("corpo(ce).png"); 
+                                else if(andou[i-1][j]>=passo-tam-1&&direcao[i-1][j]=='b')
+                                    cobra = al_load_bitmap("corpo(dc).png");
+                                else
+                                    cobra = al_load_bitmap("corpo(e).png");
+                            else if(direcao[i][j]=='b')
+                                if(andou[i][j-1]>=passo-tam-1&&direcao[i][j-1]=='d')
+                                    cobra = al_load_bitmap("corpo(ce).png"); 
+                                else if(andou[i][j+1]>=passo-tam-1&&direcao[i][j+1]=='e')
+                                    cobra = al_load_bitmap("corpo(cd).png");
+                                else
+                                    cobra = al_load_bitmap("corpo(b).png");
                         }
                         al_draw_bitmap(cobra,j*q,i*q,0);   //desenha parte da cobra
                     }
@@ -355,7 +383,7 @@ int main(int argc, char **argv)
             if(mostre)
                 al_flip_display();
             if(sair){
-                fim = al_load_bitmap("fim.bmp");
+                fim = al_load_bitmap("fim.png");
                 al_draw_bitmap(fim,0,0,0);
                 al_flip_display();
                 bool esc=false;
