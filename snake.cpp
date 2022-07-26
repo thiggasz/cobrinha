@@ -52,6 +52,7 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_BITMAP *mapa   = NULL;
 ALLEGRO_BITMAP *cobra = NULL;  //cobra
 ALLEGRO_BITMAP *maca = NULL;  //fruta
+ALLEGRO_BITMAP *doce = NULL;  //bonus
 ALLEGRO_BITMAP *fim   = NULL; //tela final
 
 int i = 15, j = 12;   //posicao inicial da Snake na matriz
@@ -115,7 +116,7 @@ int inicializa() {
     }
     al_draw_bitmap(cobra,0,0,0);
 
-    maca = al_load_bitmap("doce.tga");      //cria a fruta
+    maca = al_load_bitmap("maca.tga");      //cria a fruta
     if(!maca)
     {
         al_destroy_display(display);
@@ -133,6 +134,7 @@ int inicializa() {
         cout << "Falha ao criar a fila de eventos" << endl;
         al_destroy_bitmap(cobra);
         al_destroy_bitmap(maca);
+        al_destroy_bitmap(doce);
         al_destroy_display(display);
         al_destroy_timer(timer);
         return 0;
@@ -159,13 +161,14 @@ int main(int argc, char **argv)
     dir = false;
     srand(time(0));
     int im=rand()%23+1,jm=rand()%23+1; //posicoes da fruta
+    int id=rand()%23+1,jd=rand()%23+1; //posicoes do doce
     int tam=5;    //tamanho da cobra
+    int bonus=0; //contador do bonus
     int v[10000]; //vetor para posicoes do corpo da cobra
     int cont0=-2; //usado no fim como a quantidade anterior de quadrados do corpo da cobra, para verificar se bateu na parede ou em si mesma
     bool atravessa;  //verifica se pode atravessar parede
 
     while(!sair){
-
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
 
@@ -386,6 +389,28 @@ int main(int argc, char **argv)
                 }
             }
             al_draw_bitmap(maca,jm*q,im*q,0); //desenha fruta
+            if(bonus==99){
+                bool teste=true;
+                while(teste){  
+                    teste=false;
+                    id=rand()%23+1; //muda posicao do doce
+                    jd=rand()%23+1;
+                    for(int k=cont*2+1;k>=1;k-=2)  //testa se a posicao gerada coincide com a cobra, se sim, volta para o topo e gera outra
+                        if((id==v[k]&&jd==v[k-1]) || (id==im && jd==jm) ) 
+                            teste=true;}
+                bonus++;
+            }
+            else if(bonus==100){//desenha bonus
+                doce = al_load_bitmap("doce.tga");
+                al_draw_bitmap(doce,jd*q,id*q,0); //desenha o doce
+                if(j==jd&&i==id){
+                    placar+=3;
+                    tam+=3;
+                    bonus=0;}
+            }
+            else
+                bonus++;
+
             if(cont0>cont){ //se o cont0, a quantidade anterior de quadrados do corpo da cobra, foi maior que agora, ela encolheu ao chegar na parede ou entrou em si mesma
                 sair=true;
                 mostre=0; //nao vamos mostrar isso no display
@@ -398,6 +423,7 @@ int main(int argc, char **argv)
                 al_draw_bitmap(fim,0,0,0);
                 al_flip_display();
                 bool esc=false;
+                
                 while(!esc){
                     ALLEGRO_EVENT ev;
                     al_wait_for_event(event_queue, &ev);
@@ -410,6 +436,9 @@ int main(int argc, char **argv)
                             break;
                         }
                     }
+                     else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+                        break;
+                    }
                 }
             }
         }
@@ -417,6 +446,7 @@ int main(int argc, char **argv)
 
     al_destroy_bitmap(cobra);
     al_destroy_bitmap(maca);
+    al_destroy_bitmap(doce);
     al_destroy_bitmap(mapa);
     al_destroy_timer(timer);
     al_destroy_display(display);
