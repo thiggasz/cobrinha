@@ -12,39 +12,40 @@ const int SCREEN_H = 550;
 const int QUAD_SIZE = 20;
 
 //matriz definindo mapa do jogo: 1 representa paredes, 0 representa corredor
+//2 e 3 representam as as colunas da matriz que a cobra pode atravessar
 char MAPA[26][26] =
 {
     "1111111111111111111111111",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
-    "0000000000000000000000000",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
+    "2000000000000000000000003",
     "1111111111111111111111111",
 };
 
-int andou[26][26] = {0};
+int andou[26][26] = {0}; //matriz que define que posições o corpo da cobra está 
 char direcao[26][26];    //matriz para marcar onde o corpo deve virar e a direcao
-int passo = 0, placar = 0;
-
+int passo = 0; //define os valores da matriz andou
+int placar = 0;  //soma os pontos do jogo
 
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
@@ -54,8 +55,12 @@ ALLEGRO_BITMAP *cobra = NULL;  //cobra
 ALLEGRO_BITMAP *maca = NULL;  //fruta
 ALLEGRO_BITMAP *doce = NULL;  //bonus
 ALLEGRO_BITMAP *fim   = NULL; //tela final
+ALLEGRO_BITMAP *p0 = NULL; //placar[0]
+ALLEGRO_BITMAP *p1 = NULL; //placar[1]
+ALLEGRO_BITMAP *p2 = NULL; //placar[2]
 
 int i = 15, j = 12;   //posicao inicial da Snake na matriz
+int ip=24,jp0=13,jp1=12,jp2=11;    //posicoes do placar
 int q = 20;           //tamanho de cada celula no mapa
 int posy = i*q;       //posicao da Snake no display
 int posx = j*q;
@@ -160,13 +165,13 @@ int main(int argc, char **argv)
     esq = false;
     dir = false;
     srand(time(0));
-    int im=rand()%23+1,jm=rand()%23+1; //posicoes da fruta
-    int id=rand()%23+1,jd=rand()%23+1; //posicoes do doce
+    int im=rand()%23+1,jm=rand()%23+1; //gera uma posicao aleatoria para a maca
+    int id=rand()%23+1,jd=rand()%23+1; //gera uma posicao aleatoria para o doce
     int tam=5;    //tamanho da cobra
-    int bonus=0; //contador do bonus
+    int bonus=0; //contador para gerar o doce bonus
     int v[10000]; //vetor para posicoes do corpo da cobra
     int cont0=-2; //usado no fim como a quantidade anterior de quadrados do corpo da cobra, para verificar se bateu na parede ou em si mesma
-    bool atravessa;  //verifica se pode atravessar parede
+    bool atravessa; //verifica se pode atravessar a parede
 
     while(!sair){
         ALLEGRO_EVENT ev;
@@ -176,9 +181,9 @@ int main(int argc, char **argv)
             passo++;
             andou[i][j]=passo;
 
-            if(j==1||j==23)  //se esta nas colunas extremas
-                atravessa=true;  //pode atravessar
-            else 
+            if(j==0||j==24) //se esta agora nas colunas extremas
+                atravessa=true;   //pode atravessar
+            else
                 atravessa=false;
 
             if(cima && MAPA[i-1][j] != '1')
@@ -190,29 +195,29 @@ int main(int argc, char **argv)
             if(baixo && MAPA[i+1][j] != '1')
             {
                 i++;
-                 posy = i*q;
+                posy = i*q;
             }
             
-            if(esq && MAPA[i][j-1] != '1')
+            if(esq && (MAPA[i][j] == '0'||MAPA[i][j] == '3'))
             {
                 j--;
                 posx = j*q;
             }
-            if(esq && MAPA[i][j-1] == '1') //se a parede esta a esquerda
+            if(esq && MAPA[i][j] == '2') //se a parede esta a esquerda
             {
-                if(atravessa)  //se ja estava na primeira coluna
-                    j=23;
+                if(atravessa) //se ja estava na primeira coluna
+                    j=24;
                 posx = j*q;
             }
-            if(dir && MAPA[i][j+1] != '1')
+            if(dir && (MAPA[i][j] == '0'||MAPA[i][j] == '2'))
             {
                 j++;
                 posx = j*q;
             }
-            if(dir && MAPA[i][j+1] == '1') //se a parede esta a direita
+            if(dir && MAPA[i][j] == '3') //se a parede esta a direita
             {
-                if(atravessa)  //se ja estava na ultima coluna
-                    j=1;
+                if(atravessa) //se ja estava na ultima coluna
+                    j=0;
                 posx=j*q;
             }
 
@@ -304,7 +309,7 @@ int main(int argc, char **argv)
 
             al_draw_bitmap(mapa,0,0,0);
             int cont=-1;  //contador para as posicoes do vetor
-            bool comeu=false;  //definir se comeu a fruta
+            bool comeu=false;  //definir se comeu a maca
             bool mostre=true;  //explicado abaixo
             for(int i=0;i<26;i++)
                 for(int j=0;j<26;j++)
@@ -400,7 +405,7 @@ int main(int argc, char **argv)
                             teste=true;}
                 bonus++;
             }
-            else if(bonus==100){//desenhar o bonus
+            else if(bonus==100){ //desenhar o bonus
                 doce = al_load_bitmap("doce.tga");
                 al_draw_bitmap(doce,jd*q,id*q,0); //desenha o doce
                 if(j==jd&&i==id){//se comeu 
@@ -411,9 +416,78 @@ int main(int argc, char **argv)
             else    //aumentar o contador do bonus
                 bonus++;
 
+            //testes para determinar cada algarismo do placar
+            if(placar-(placar/10)*10==0)
+                p0=al_load_bitmap("0.png");
+            else if(placar-(placar/10)*10==1)
+                p0=al_load_bitmap("1.png");
+            else if(placar-(placar/10)*10==2)
+                p0=al_load_bitmap("2.png");
+            else if(placar-(placar/10)*10==3)
+                p0=al_load_bitmap("3.png");
+            else if(placar-(placar/10)*10==4)
+                p0=al_load_bitmap("4.png");
+            else if(placar-(placar/10)*10==5)
+                p0=al_load_bitmap("5.png");
+            else if(placar-(placar/10)*10==6)
+                p0=al_load_bitmap("6.png");
+            else if(placar-(placar/10)*10==7)
+                p0=al_load_bitmap("7.png");
+            else if(placar-(placar/10)*10==8)
+                p0=al_load_bitmap("8.png");
+            else
+                p0=al_load_bitmap("9.png");
+
+            if(placar/10-(placar/100)*10==0)
+                p1=al_load_bitmap("0.png");
+            else if(placar/10-(placar/100)*10==1)
+                p1=al_load_bitmap("1.png");
+            else if(placar/10-(placar/100)*10==2)
+                p1=al_load_bitmap("2.png");
+            else if(placar/10-(placar/100)*10==3)
+                p1=al_load_bitmap("3.png");
+            else if(placar/10-(placar/100)*10==4)
+                p1=al_load_bitmap("4.png");
+            else if(placar/10-(placar/100)*10==5)
+                p1=al_load_bitmap("5.png");
+            else if(placar/10-(placar/100)*10==6)
+                p1=al_load_bitmap("6.png");
+            else if(placar/10-(placar/100)*10==7)
+                p1=al_load_bitmap("7.png");
+            else if(placar/10-(placar/100)*10==8)
+                p1=al_load_bitmap("8.png");
+            else
+                p1=al_load_bitmap("9.png");
+
+            if(placar/100==0)
+                p2=al_load_bitmap("0.png");
+            else if(placar/100==1)
+                p2=al_load_bitmap("1.png");
+            else if(placar/100==2)
+                p2=al_load_bitmap("2.png");
+            else if(placar/100==3)
+                p2=al_load_bitmap("3.png");
+            else if(placar/100==4)
+                p2=al_load_bitmap("4.png");
+            else if(placar/100==5)
+                p2=al_load_bitmap("5.png");
+            else if(placar/100==6)
+                p2=al_load_bitmap("6.png");
+            else if(placar/100==7)
+                p2=al_load_bitmap("7.png");
+            else if(placar/100==8)
+                p2=al_load_bitmap("8.png");
+            else
+                p2=al_load_bitmap("9.png");
+
+            //desenha o placar
+            al_draw_bitmap(p0,jp0*q,ip*q,0);
+            al_draw_bitmap(p1,jp1*q,ip*q,0);
+            al_draw_bitmap(p2,jp2*q,ip*q,0);
+
             if(cont0>cont){ //se o cont0, a quantidade anterior de quadrados do corpo da cobra, foi maior que agora, ela encolheu ao chegar na parede ou entrou em si mesma
                 sair=true;
-                mostre=0; //nao vamos mostrar isso no display
+                mostre=false; //nao vamos mostrar isso no display
             }
             cont0=cont;
             if(mostre)
@@ -421,6 +495,10 @@ int main(int argc, char **argv)
             if(sair){ //caso a cobra morra
                 fim = al_load_bitmap("fim.png");  //tela final
                 al_draw_bitmap(fim,0,0,0);        //desenhar tela final
+                //desenhar placar na tela final
+                al_draw_bitmap(p0,jp0*q,ip*q,0);
+                al_draw_bitmap(p1,jp1*q,ip*q,0);
+                al_draw_bitmap(p2,jp2*q,ip*q,0);
                 al_flip_display();
                 bool esc=false;
                 
@@ -448,10 +526,14 @@ int main(int argc, char **argv)
     al_destroy_bitmap(maca);
     al_destroy_bitmap(doce);
     al_destroy_bitmap(mapa);
+    al_destroy_bitmap(p0);
+    al_destroy_bitmap(p1);
+    al_destroy_bitmap(p2);
     al_destroy_timer(timer);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);
 
+    //mostrar placar no terminal
     cout << "Seu placar foi: " << placar << endl;
 
     return 0;
