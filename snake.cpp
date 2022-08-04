@@ -58,6 +58,16 @@ ALLEGRO_BITMAP *fim   = NULL; //tela final
 ALLEGRO_BITMAP *p0 = NULL; //placar[0]
 ALLEGRO_BITMAP *p1 = NULL; //placar[1]
 ALLEGRO_BITMAP *p2 = NULL; //placar[2]
+ALLEGRO_BITMAP *pl0 = NULL;
+ALLEGRO_BITMAP *pl1 = NULL;
+ALLEGRO_BITMAP *pl2 = NULL;
+ALLEGRO_BITMAP *pl3 = NULL;
+ALLEGRO_BITMAP *pl4 = NULL;
+ALLEGRO_BITMAP *pl5 = NULL;
+ALLEGRO_BITMAP *pl6 = NULL;
+ALLEGRO_BITMAP *pl7 = NULL;
+ALLEGRO_BITMAP *pl8 = NULL;
+ALLEGRO_BITMAP *pl9 = NULL;
 
 int i = 15, j = 12;   //posicao inicial da Snake na matriz
 int ip=24,jp0=13,jp1=12,jp2=11;    //posicoes do placar
@@ -129,6 +139,17 @@ int inicializa() {
         return -1;
     }
     al_draw_bitmap(maca,0,0,0);
+
+    pl0=al_load_bitmap("0.png");
+    pl1=al_load_bitmap("1.png");
+    pl2=al_load_bitmap("2.png");
+    pl3=al_load_bitmap("3.png");
+    pl4=al_load_bitmap("4.png");
+    pl5=al_load_bitmap("5.png");
+    pl6=al_load_bitmap("6.png");
+    pl7=al_load_bitmap("7.png");
+    pl8=al_load_bitmap("8.png");
+    pl9=al_load_bitmap("9.png");
 
     al_set_target_bitmap(al_get_backbuffer(display)); //muda de volta o destino dos desenhos para o display
 
@@ -418,67 +439,67 @@ int main(int argc, char **argv)
 
             //testes para determinar cada algarismo do placar
             if(placar-(placar/10)*10==0)
-                p0=al_load_bitmap("0.png");
+                p0=pl0;
             else if(placar-(placar/10)*10==1)
-                p0=al_load_bitmap("1.png");
+                p0=pl1;
             else if(placar-(placar/10)*10==2)
-                p0=al_load_bitmap("2.png");
+                p0=pl2;
             else if(placar-(placar/10)*10==3)
-                p0=al_load_bitmap("3.png");
+                p0=pl3;
             else if(placar-(placar/10)*10==4)
-                p0=al_load_bitmap("4.png");
+                p0=pl4;
             else if(placar-(placar/10)*10==5)
-                p0=al_load_bitmap("5.png");
+                p0=pl5;
             else if(placar-(placar/10)*10==6)
-                p0=al_load_bitmap("6.png");
+                p0=pl6;
             else if(placar-(placar/10)*10==7)
-                p0=al_load_bitmap("7.png");
+                p0=pl7;
             else if(placar-(placar/10)*10==8)
-                p0=al_load_bitmap("8.png");
+                p0=pl8;
             else
-                p0=al_load_bitmap("9.png");
+                p0=pl9;
 
             if(placar/10-(placar/100)*10==0)
-                p1=al_load_bitmap("0.png");
+                p1=pl0;
             else if(placar/10-(placar/100)*10==1)
-                p1=al_load_bitmap("1.png");
+                p1=pl1;
             else if(placar/10-(placar/100)*10==2)
-                p1=al_load_bitmap("2.png");
+                p1=pl2;
             else if(placar/10-(placar/100)*10==3)
-                p1=al_load_bitmap("3.png");
+                p1=pl3;
             else if(placar/10-(placar/100)*10==4)
-                p1=al_load_bitmap("4.png");
+                p1=pl4;
             else if(placar/10-(placar/100)*10==5)
-                p1=al_load_bitmap("5.png");
+                p1=pl5;
             else if(placar/10-(placar/100)*10==6)
-                p1=al_load_bitmap("6.png");
+                p1=pl6;
             else if(placar/10-(placar/100)*10==7)
-                p1=al_load_bitmap("7.png");
+                p1=pl7;
             else if(placar/10-(placar/100)*10==8)
-                p1=al_load_bitmap("8.png");
+                p1=pl8;
             else
-                p1=al_load_bitmap("9.png");
+                p1=pl9;
 
             if(placar/100==0)
-                p2=al_load_bitmap("0.png");
+                p2=pl0;
             else if(placar/100==1)
-                p2=al_load_bitmap("1.png");
+                p2=pl1;
             else if(placar/100==2)
-                p2=al_load_bitmap("2.png");
+                p2=pl2;
             else if(placar/100==3)
-                p2=al_load_bitmap("3.png");
+                p2=pl3;
             else if(placar/100==4)
-                p2=al_load_bitmap("4.png");
+                p2=pl4;
             else if(placar/100==5)
-                p2=al_load_bitmap("5.png");
+                p2=pl5;
             else if(placar/100==6)
-                p2=al_load_bitmap("6.png");
+                p2=pl6;
             else if(placar/100==7)
-                p2=al_load_bitmap("7.png");
+                p2=pl7;
             else if(placar/100==8)
-                p2=al_load_bitmap("8.png");
+                p2=pl8;
             else
-                p2=al_load_bitmap("9.png");
+                p2=pl9;
 
             //desenha o placar
             al_draw_bitmap(p0,jp0*q,ip*q,0);
