@@ -58,16 +58,16 @@ ALLEGRO_BITMAP *fim   = NULL; //tela final
 ALLEGRO_BITMAP *p0 = NULL; //placar[0]
 ALLEGRO_BITMAP *p1 = NULL; //placar[1]
 ALLEGRO_BITMAP *p2 = NULL; //placar[2]
-ALLEGRO_BITMAP *pl0 = NULL;
-ALLEGRO_BITMAP *pl1 = NULL;
-ALLEGRO_BITMAP *pl2 = NULL;
-ALLEGRO_BITMAP *pl3 = NULL;
-ALLEGRO_BITMAP *pl4 = NULL;
-ALLEGRO_BITMAP *pl5 = NULL;
-ALLEGRO_BITMAP *pl6 = NULL;
-ALLEGRO_BITMAP *pl7 = NULL;
-ALLEGRO_BITMAP *pl8 = NULL;
-ALLEGRO_BITMAP *pl9 = NULL;
+ALLEGRO_BITMAP *pl0 = NULL; //imagem do numero 0
+ALLEGRO_BITMAP *pl1 = NULL; //imagem do numero 1
+ALLEGRO_BITMAP *pl2 = NULL; //imagem do numero 2
+ALLEGRO_BITMAP *pl3 = NULL; //imagem do numero 3
+ALLEGRO_BITMAP *pl4 = NULL; //imagem do numero 4
+ALLEGRO_BITMAP *pl5 = NULL; //imagem do numero 5
+ALLEGRO_BITMAP *pl6 = NULL; //imagem do numero 6
+ALLEGRO_BITMAP *pl7 = NULL; //imagem do numero 7
+ALLEGRO_BITMAP *pl8 = NULL; //imagem do numero 8
+ALLEGRO_BITMAP *pl9 = NULL; //imagem do numero 9
 
 int i = 15, j = 12;   //posicao inicial da Snake na matriz
 int ip=24,jp0=13,jp1=12,jp2=11;    //posicoes do placar
@@ -140,6 +140,7 @@ int inicializa() {
     }
     al_draw_bitmap(maca,0,0,0);
 
+    //carregar a imagem de cada numero em uma variável
     pl0=al_load_bitmap("0.png");
     pl1=al_load_bitmap("1.png");
     pl2=al_load_bitmap("2.png");
